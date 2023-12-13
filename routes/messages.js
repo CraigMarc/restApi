@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
-
+//import { v4 as uuidv4 } from 'uuid';
+//const { v4, uuidv4 } = require("uuid");
+const uuid = require("uuid");
 /* GET users listing. */
 /*
 router.get('/', function(req, res, next) {
@@ -44,6 +46,18 @@ router.get('/', (req, res) => {
 router.get('/:messageId', (req, res) => {
   return res.send(messages[req.params.messageId]);
 });
+
+router.post('/', (req, res) => {
+    const id = uuid.v4();
+    const message = {
+      id,
+      text: req.body.text,
+    };
+  
+    messages[id] = message;
+  
+    return res.send(message);
+  });
 
 
 module.exports = router;
