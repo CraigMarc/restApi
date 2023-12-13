@@ -3,13 +3,22 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+const models = require('./models/model');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var messageRouter = require('./routes/messages');
+var sessionRouter = require('./routes/session');
 
 
 var app = express();
+
+app.use((req, res, next) => {
+  req.context = {
+    models,
+    me: models.users[1],
+  };
+  next();
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
@@ -28,6 +37,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/messages', messageRouter);
+app.use('/session', sessionRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

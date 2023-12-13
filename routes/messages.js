@@ -1,40 +1,19 @@
 var express = require('express');
 var router = express.Router();
-//import { v4 as uuidv4 } from 'uuid';
-//const { v4, uuidv4 } = require("uuid");
+const models = require("../models/model");
 const uuid = require("uuid");
-/* GET users listing. */
-/*
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});*/
 
 
-let users = {
-  1: {
-    id: '1',
-    username: 'Robin Wieruch',
-  },
-  2: {
-    id: '2',
-    username: 'Dave Davids',
-  },
-};
 
-let messages = {
-  1: {
-    id: '1',
-    text: 'Hello World',
-    userId: '1',
-  },
-  2: {
-    id: '2',
-    text: 'By World',
-    userId: '2',
-  },
-};
+var app = express();
 
-
+app.use((req, res, next) => {
+  req.context = {
+    models,
+    me: models.users[1],
+  };
+  next();
+});
 
 
 
@@ -44,6 +23,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:messageId', (req, res) => {
+  
   return res.send(messages[req.params.messageId]);
 });
 
@@ -52,6 +32,7 @@ router.post('/', (req, res) => {
     const message = {
       id,
       text: req.body.text,
+      userId: req.me.id,
     };
   
     messages[id] = message;
@@ -59,5 +40,21 @@ router.post('/', (req, res) => {
     return res.send(message);
   });
 
+
+  router.delete('/:messageId', (req, res) => {
+    const {
+      [req.params.messageId]: message,
+      ...otherMessages
+    } = messages;
+  
+    messages = otherMessages;
+  
+    return res.send(message);
+  });
+
+  router.get('/session', (req, res) => {
+    console.log(hello)
+    return res.send('hello');
+  });
 
 module.exports = router;
