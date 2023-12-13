@@ -3,11 +3,13 @@ var router = express.Router();
 const models = require("../models/model");
 
 router.get('/', (req, res) => {
-  return res.send(Object.values(users));
+  
+  return res.send(req.context.models.users[req.context.me.id]);
 });
 
 router.get('/:userId', (req, res) => {
-  return res.send(users[req.params.userId]);
+  return res.send(req.context.models.users[req.params.userId]);
+  
 });
 
 router.post('/', (req, res) => {

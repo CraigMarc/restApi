@@ -5,26 +5,16 @@ const uuid = require("uuid");
 
 
 
-var app = express();
-
-app.use((req, res, next) => {
-  req.context = {
-    models,
-    me: models.users[1],
-  };
-  next();
-});
-
-
 
 
 router.get('/', (req, res) => {
-  return res.send(Object.values(messages));
+  
+  return res.send(Object.values(req.context.models.messages));
 });
 
 router.get('/:messageId', (req, res) => {
-  
-  return res.send(messages[req.params.messageId]);
+  return res.send(req.context.models.messages[req.params.messageId]);
+  //return res.send(messages[req.params.messageId]);
 });
 
 router.post('/', (req, res) => {
@@ -45,9 +35,9 @@ router.post('/', (req, res) => {
     const {
       [req.params.messageId]: message,
       ...otherMessages
-    } = messages;
+    } = req.context.models.messages;
   
-    messages = otherMessages;
+    req.context.models.messages = otherMessages;
   
     return res.send(message);
   });
